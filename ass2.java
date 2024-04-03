@@ -61,8 +61,8 @@ model.addRow(new Object[]{ list.getMa(), list.getTen(), list.getEmail(), list.ge
     
 }
    
-public void diplay(int index){
-    // Biểu tượng cho nam và nữdelivery-boy.png"woman.png
+public void diplay(int index ){
+  
 ImageIcon maleIcon = new ImageIcon("/Users/mac/Downloads/24px/delivery-boy.png");
 ImageIcon femaleIcon = new ImageIcon("/Users/mac/Downloads/24px/woman.png");
     sinhvien list =new sinhvien();
@@ -84,7 +84,8 @@ ImageIcon femaleIcon = new ImageIcon("/Users/mac/Downloads/24px/woman.png");
 }
 public void them(){
     try {
-        String sql = "INSERT INTO SINHVIEN(MASV, HOTEN, EMAIL, SODT, GIOITINH, DIACHI) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO SINHVIEN(MASV, HOTEN, EMAIL, SODT, GIOITINH, DIACHI, hinh) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        
         PreparedStatement pst = db.sConn.prepareStatement(sql);
         pst.setString(1, txtmasv.getText());
         pst.setString(2, txthoten.getText());
@@ -92,18 +93,48 @@ public void them(){
         pst.setInt(4, Integer.parseInt(txtsdt.getText()));
         pst.setBoolean(5, jRadioButton1.isSelected());
         pst.setString(6, txadiachi.getText());
-        
+
+        String imagePath;
+       
+        if (jRadioButton1.isSelected()) {
+           imagePath = "/Users/mac/Downloads/24px/delivery-boy.png"; // Đường dẫn hình ảnh nam
+        }
+        else {    
+           imagePath = "/Users/mac/Downloads/24px/woman.png"; // Đường dẫn hình ảnh nữ
+        }
+        pst.setString(7, imagePath);
+
         int rowsInserted = pst.executeUpdate();
         if (rowsInserted > 0)
             System.out.println("Thêm mới thành công");
+        try {
+      
+        } catch (Exception e) {
+        }
     } catch (Exception e) {
         e.printStackTrace();
         JOptionPane.showMessageDialog(rootPane, e);
     }
+  try {
+    String msv = "INSERT INTO GRADE (MASV) VALUES(?)";
+    PreparedStatement pst = db.sConn.prepareStatement(msv);
+    pst.setString(1, txtmasv.getText());
+
+    int rowsInserted = pst.executeUpdate();  // thực thi câu truy vấn SQL
+
+    if (rowsInserted > 0) {
+        System.out.println("Thêm mới thành công");
+    }
+
+} catch (Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(rootPane, e);
+}
 }
 public void sua(){
     try {
-        String sql = "UPDATE SINHVIEN SET HOTEN=?, EMAIL=?, SODT=?, GIOITINH=?, DIACHI=? WHERE MASV = ?";
+        String sql = "UPDATE SINHVIEN SET HOTEN=?, EMAIL=?, SODT=?, GIOITINH=?, DIACHI=?,hinh=? WHERE MASV = ?";
+        
         PreparedStatement pst = db.sConn.prepareStatement(sql);
         pst.setString(6, txtmasv.getText());
         pst.setString(1, txthoten.getText());
@@ -111,7 +142,15 @@ public void sua(){
         pst.setInt(3, Integer.parseInt(txtsdt.getText()));
         pst.setBoolean(4, jRadioButton1.isSelected());
         pst.setString(5, txadiachi.getText());
-        
+                String imagePath;
+        if (jRadioButton1.isSelected()) {
+           imagePath = "/Users/mac/Downloads/24px/delivery-boy.png"; // Đường dẫn hình ảnh nam
+        }
+        else {    
+           imagePath = "/Users/mac/Downloads/24px/woman.png"; // Đường dẫn hình ảnh nữ
+        }
+        pst.setString(7, imagePath);
+
         int rowsUpdated = pst.executeUpdate();
         if (rowsUpdated > 0) 
             System.out.println("Sửa thành công");
@@ -122,13 +161,21 @@ public void sua(){
 }
 public void xoa(){
     try {
+        // Xoa bản ghi liên quan từ bảng 'GRADE' trước
+        String sqlDeleteGrade = "DELETE FROM GRADE WHERE MASV = ?";
+        PreparedStatement pstDeleteGrade = db.sConn.prepareStatement(sqlDeleteGrade);
+        pstDeleteGrade.setString(1, txtmasv.getText());
+        pstDeleteGrade.executeUpdate();
+          
+        // Tiếp tục xóa bản ghi từ bảng 'SINHVIEN'
         String sql = "DELETE FROM SINHVIEN WHERE MASV = ?";
         PreparedStatement pst = db.sConn.prepareStatement(sql);
         pst.setString(1, txtmasv.getText());
         
         int rowsDeleted = pst.executeUpdate();
-        if (rowsDeleted > 0) 
+        if (rowsDeleted > 0) {
             System.out.println("Xóa thành công");
+        }
     } catch (Exception e) {
         e.printStackTrace();
     }
@@ -356,7 +403,7 @@ public void xoa(){
         int chon = jTable1.getSelectedRow();
         if (chon >=0) {
             diplay(chon);
-       
+      
         }
     }//GEN-LAST:event_jTable1MouseClicked
 
