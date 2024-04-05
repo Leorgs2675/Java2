@@ -275,7 +275,7 @@ List<arrlist> list = new ArrayList<>();
 
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(51, 102, 255));
-        jLabel6.setText("QUẢN LÝ SINH VIÊN ");
+        jLabel6.setText("QUẢN LÝ ĐIỂM  SINH VIÊN ");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
